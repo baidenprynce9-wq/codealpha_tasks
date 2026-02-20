@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | CodeAlpha Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-light: #818cf8;
+            --bg: #0b0f1a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --text: #f8fafc;
+            --text-dim: #94a3b8;
+            --accent: #c084fc;
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            background-image:
+                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(192, 132, 252, 0.15) 0px, transparent 50%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-wrap {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 2rem;
+        }
+
+        .container {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 3.5rem;
+            border-radius: 2.5rem;
+            box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.6);
+            width: 100%;
+            max-width: 480px;
+            border: 1px solid var(--glass-border);
+            position: relative;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+            text-align: center;
+            background: linear-gradient(135deg, #ffffff 50%, #94a3b8);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em;
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: var(--text-dim);
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.75rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.75rem;
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        input {
+            width: 100%;
+            padding: 1.1rem 1.5rem;
+            border-radius: 1.25rem;
+            border: 1px solid var(--glass-border);
+            background: rgba(15, 23, 42, 0.4);
+            color: white;
+            outline: none;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            font-size: 1.05rem;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            background: rgba(15, 23, 42, 0.6);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15);
+        }
+
+        button#submitBtn {
+            width: 100%;
+            padding: 1.1rem;
+            border-radius: 1.25rem;
+            border: none;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+            margin-top: 1rem;
+            box-shadow: 0 10px 20px -5px rgba(99, 102, 241, 0.4);
+        }
+
+        button#submitBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px -10px rgba(99, 102, 241, 0.6);
+        }
+
+        .toggle-link {
+            text-align: center;
+            margin-top: 2.5rem;
+            font-size: 1rem;
+            color: var(--text-dim);
+        }
+
+        .toggle-link span {
+            color: var(--primary-light);
+            cursor: pointer;
+            font-weight: 700;
+            transition: color 0.3s;
+        }
+
+        .toggle-link span:hover {
+            color: var(--accent);
+        }
+
+        .back-home {
+            position: absolute;
+            top: 2.5rem;
+            left: 2.5rem;
+            color: var(--text-dim);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            z-index: 10;
+        }
+
+        .back-home:hover {
+            color: var(--primary-light);
+            transform: translateX(-5px);
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .toast {
+            background: rgba(30, 41, 59, 0.9);
+            backdrop-filter: blur(10px);
+            color: var(--text);
+            padding: 1.25rem 2rem;
+            border-radius: 1.25rem;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transform: translateX(130%);
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            min-width: 320px;
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .toast-success .toast-icon {
+            color: #4ade80;
+        }
+
+        .toast-error .toast-icon {
+            color: #f87171;
+        }
+
+        .toast-info .toast-icon {
+            color: var(--primary-light);
+        }
+
+        /* Footer */
+        footer {
+            padding: 4rem 5% 2rem;
+            background: rgba(15, 23, 42, 0.4);
+            border-top: 1px solid var(--glass-border);
+            text-align: center;
+            width: 100%;
+            margin-top: auto;
+        }
+
+        .footer-logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary-light), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-links a {
+            color: var(--text-dim);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-light);
+        }
+
+        .copy {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <a href="/" class="back-home">← Back to Store</a>
+
+    <div class="login-wrap">
+        <div class="container">
+            <h1 id="title">Welcome Back</h1>
+            <p class="subtitle" id="subtitle">Log in to your account</p>
+
+            <form id="authForm">
+                <div class="form-group" id="nameGroup" style="display: none;">
+                    <label for="name">Full Name</label>
+                    <input type="text" id="name" placeholder="Prince Baiden">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" placeholder="prince@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" id="submitBtn">Login</button>
+            </form>
+
+            <p class="toggle-link" id="toggleText">
+                Don't have an account? <span id="toggleBtn">Sign Up</span>
+            </p>
+        </div>
+    </div>
+
+    <footer>
+        <div class="logo footer-logo">Baiden Store</div>
+        <div class="footer-links">
+            <a href="/">Shop</a>
+            <a href="/login.html">Account</a>
+            <a href="#">Privacy</a>
+            <a href="#">Contact</a>
+        </div>
+        <p class="copy">&copy; 2026 Baiden Store. Designed for CodeAlpha Internship.</p>
+    </footer>
+
+    <div class="toast-container" id="toast-container"></div>
+
+    <script>
+        const form = document.getElementById('authForm');
+        const title = document.getElementById('title');
+        const subtitle = document.getElementById('subtitle');
+        const nameGroup = document.getElementById('nameGroup');
+        const submitBtn = document.getElementById('submitBtn');
+        const toggleBtn = document.getElementById('toggleBtn');
+        const toggleText = document.getElementById('toggleText');
+        const messageDiv = document.getElementById('message');
+
+        let isLogin = true;
+
+        toggleBtn.addEventListener('click', () => {
+            isLogin = !isLogin;
+            if (isLogin) {
+                title.innerText = 'Welcome Back';
+                subtitle.innerText = 'Log in to your account';
+                nameGroup.style.display = 'none';
+                submitBtn.innerText = 'Login';
+                toggleText.innerHTML = 'Don\'t have an account? <span id="toggleBtn">Sign Up</span>';
+            } else {
+                title.innerText = 'Create Account';
+                subtitle.innerText = 'Join our premium store today';
+                nameGroup.style.display = 'block';
+                submitBtn.innerText = 'Sign Up';
+                toggleText.innerHTML = 'Already have an account? <span id="toggleBtn">Login</span>';
+            }
+            // Re-attach event listener because innerHTML wipes it
+            document.getElementById('toggleBtn').addEventListener('click', () => toggleBtn.click());
+        });
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            showToast('Processing...', 'info');
+
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
+            const payload = isLogin ? { email, password } : { name, email, password };
+
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showToast(isLogin ? 'Login successful!' : 'Registration successful!', 'success');
+                    if (data.token) {
+                        localStorage.setItem('token', data.token);
+                        localStorage.setItem('user', JSON.stringify(data.user));
+                        setTimeout(() => location.href = '/', 1500);
+                    }
+                } else {
+                    showToast(data.message || 'Something went wrong', 'error');
+                }
+            } catch (error) {
+                showToast('Network error or server down', 'error');
+            }
+        });
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `toast toast-${type}`;
+
+            let icon = 'fa-info-circle';
+            if (type === 'success') icon = 'fa-check-circle';
+            if (type === 'error') icon = 'fa-exclamation-circle';
+
+            toast.innerHTML = `
+                <i class="fas ${icon} toast-icon"></i>
+                <span>${message}</span>
+            `;
+
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>
